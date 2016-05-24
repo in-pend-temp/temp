@@ -104,8 +104,8 @@ typedef struct str_thdata
 		int start0_sec = start0.tv_sec;
 		int start0_usec = start0.tv_usec;
 		//while(1){swing(t);}
-		setup();
-		swingup();
+		//setup();
+		//swingup();
 		
 		pend->sec = start0.tv_sec;
 		pend->usec = start0.tv_usec;
@@ -136,10 +136,13 @@ typedef struct str_thdata
 		}
 		
 		if (pend->output_motor > 0){
-			dddir = 1;
+			dddir = 0;
 		}
-		else dddir=0;
-		pwm_control_dir(dddir, pppwm);
+		else dddir=1;
+		pwm_control_dir(dddir, pppwm/2);
+		
+		cout<<"DDDDIR: "<<dddir<<endl;
+		cout<<"PPPWM: "<<pppwm<<endl<<endl;
 		
 		
 		
@@ -195,6 +198,7 @@ public:
 		 * int pthread_create(pthread_t *thread, pthread_attr_t *attr, void
 		 *         *(*start_routine)(void *), void *arg);
 		 */
+		 setup();
 
 		pthread_create (&thread1, NULL, inputFunction, (void *) &data1);
 		//	pthread_create (&thread2, NULL, inputFunction, (void *) &data2);
@@ -478,7 +482,7 @@ void pwm_control_dir(int direction_motor, int duty_cycle_motor)
 	fseek(dir,0,SEEK_SET);
 	fprintf(dir,"%d",direction_motor);
 	fflush(dir);
-	cout<<"DDDDDDD"<<endl; 
+	//cout<<"DDDDDDD"<<endl; 
 }
 void stop()
 {
@@ -545,7 +549,7 @@ cout<<"ASD"<<endl;
 //usleep(1000000);
 cout<<"ASD"<<endl;
 //define pin variables
-int period = 500000, dutyc = 10000, polarity = 1, run = 1;
+int period = 500000, dutyc = 10000, polarity = 1, run = 0;
 int increment = 1;
 pwm_period = fopen("/sys/devices/ocp.3/pwm_test_P8_13.16/period", "w");
 if(pwm_period == NULL) {printf("Unable to open pwm period.\n");}
