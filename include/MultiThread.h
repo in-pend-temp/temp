@@ -72,6 +72,7 @@ void bdir();
 void bbdir();
 void adir();
 void stop();
+void pwm_control_dir(int direction_motor, int duty_cycle_motor);
 
 		//int t[8]={0,300000,250000,260000,250000,100000,200000};
 		//int ts[8]={1,2,3,4,5,6,7,8};
@@ -105,6 +106,12 @@ typedef struct str_thdata
 		//while(1){swing(t);}
 		setup();
 		swingup();
+		
+		pend->sec = start0.tv_sec;
+		pend->usec = start0.tv_usec;
+		
+		int dddir, pppwm;
+		
 	    while (1)
 	    {
         //swingup(t,0);
@@ -120,6 +127,22 @@ typedef struct str_thdata
         pend->angle(ev.value,ev.time.tv_sec, ev.time.tv_usec);}
         else if(ev.value==2||ev.value==-2){
         pend->position(ev.value,ev.time.tv_sec, ev.time.tv_usec);}
+		
+		if (abs(pend->output_motor) > 500000){
+			pppwm = 0;
+		}
+		else {
+			pppwm = 500000-abs(pend->output_motor);
+		}
+		
+		if (pend->output_motor > 0){
+			dddir = 1;
+		}
+		else dddir=0;
+		pwm_control_dir(dddir, pppwm);
+		
+		
+		
 		//---------522
 		//---------522
 		//swingup(t,0);
@@ -443,18 +466,19 @@ void bdir()
 	fflush(dir);
 	cout<<"DDDDDDD"<<endl; 
 }
-void bbdir()
+
+void pwm_control_dir(int direction_motor, int duty_cycle_motor)
 {
 	fseek(pwm_run,0,SEEK_SET);
 	fprintf(pwm_run,"%d",1);	
 	fflush(pwm_run);
 	fseek(pwm_duty,0,SEEK_SET);
-	fprintf(pwm_duty,"%d",period1);
+	fprintf(pwm_duty,"%d", duty_cycle_motor);
 	fflush(pwm_duty);
 	fseek(dir,0,SEEK_SET);
-	fprintf(dir,"%d",1);
+	fprintf(dir,"%d",direction_motor);
 	fflush(dir);
-	cout<<"DDDDDDD"<<endl;
+	cout<<"DDDDDDD"<<endl; 
 }
 void stop()
 {

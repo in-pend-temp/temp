@@ -24,10 +24,10 @@ public :
     float deltatheta, deltat;
     float set_theta;
     float pwm, dir;
-    float errorSum, kp, ki, kd, errorOld, output;
+    float errorSum, kp, ki, kd, errorOld, output_motor;
     Pendulum(){
-    theta_cu=0;
-    theta_pr=0;
+    theta_cu=180;
+    theta_pr=180;
     x=0;
     set_theta=180;
     errorOld = 0;
@@ -50,11 +50,16 @@ void Pendulum::compute_PID()
   errorSum += error*deltat;
   float derror = (error - errorOld)/deltat;
 
-  output = kp*error + ki*errorSum + kd*derror;
+  output_motor = kp*error + ki*errorSum + kd*derror;
 
   errorOld = error;
 
-  cout<<endl<<"output: "<<output<<endl;
+  cout<<"output: "<<output_motor<<endl;
+  cout<<"deltat: "<<deltat<<endl;
+  cout<<"errorsum: "<<errorSum<<endl;
+  cout<<"derror: "<<derror<<endl;
+  cout<<"error: "<<error<<endl;
+  cout<<"theta_cu: "<<theta_cu<<endl<<endl<<endl;
 }
 
 void Pendulum::angle(int a,unsigned int sec1, unsigned int usec1)
@@ -68,7 +73,7 @@ void Pendulum::angle(int a,unsigned int sec1, unsigned int usec1)
   deltatheta=theta_cu-theta_pr;
   deltat=((sec-sec_pr)*1000000+usec-usec_pr)/1000000.0f;
   ang_acc=deltatheta/deltat;
-  cout<<theta_cu<<endl;
+  //cout<<theta_cu<<endl;
 
   compute_PID();
 }
